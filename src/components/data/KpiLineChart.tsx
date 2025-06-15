@@ -11,7 +11,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-// Map of metric types to colors and labels
+import { Worm } from "lucide-react";
+
 const KPI_TYPES = [
   { value: "revenue", label: "Revenue", color: "#2563eb" },
   { value: "customers", label: "Customers", color: "#16a34a" },
@@ -21,24 +22,44 @@ const KPI_TYPES = [
 ];
 
 // Helper: get label and color by type
-const getKpiMeta = (type) => KPI_TYPES.find((k) => k.value === type) || { label: type, color: "#555" };
+const getKpiMeta = (type: string) =>
+  KPI_TYPES.find((k) => k.value === type) || { label: type, color: "#555" };
 
-function parseChartData(rawPoints) {
-  // Group by date, flatten all metrics into one array
-  const grouped = {};
+function parseChartData(rawPoints: any[]) {
+  const grouped: Record<string, any> = {};
   rawPoints.forEach((pt) => {
     const month = new Date(pt.date).toISOString().slice(0, 7); // e.g. "2024-06"
-    if (!grouped[month]) grouped[month] = { name: new Date(pt.date).toLocaleString("en-US", { month: "short", year: "2-digit" }) };
+    if (!grouped[month]) {
+      grouped[month] = {
+        name: new Date(pt.date).toLocaleString("en-US", { month: "short", year: "2-digit" }),
+      };
+    }
     grouped[month][pt.kpi_type] = pt.value;
   });
-  // Return data sorted by month
   return Object.values(grouped).sort((a, b) => (a.name > b.name ? 1 : -1));
 }
 
-export default function KpiLineChart() {
-  // Fetch all points for current user
-  const { data: userSession } = supabase.auth.getSession().then((d) => d.data);
+// Worm icon dot component for recharts
+function WormDot(props: any) {
+  const { cx, cy, stroke } = props;
+  if (typeof cx !== "number" || typeof cy !== "number") return null;
+  return (
+    <g>
+      <Worm
+        x={cx - 8}
+        y={cy - 8}
+        width={16}
+        height={16}
+        stroke={stroke}
+        color={stroke}
+        size={16}
+        style={{ pointerEvents: "none" }}
+      />
+    </g>
+  );
+}
 
+export default function KpiLineChart() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["kpi_chart_points", "all"],
     queryFn: async () => {
@@ -95,7 +116,7 @@ export default function KpiLineChart() {
               name={label}
               connectNulls
               strokeWidth={2}
-              dot={{ r: 2.5 }}
+              dot={<WormDot stroke={color} />}
               isAnimationActive={false}
             />
           ))}
