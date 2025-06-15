@@ -6,19 +6,22 @@ import DemoChart from "@/components/dashboard/DemoChart";
 import ConnectProviderCard from "@/components/dashboard/ConnectProviderCard";
 import EmbedWidgetCard from "@/components/dashboard/EmbedWidgetCard";
 import AlertsCard from "@/components/dashboard/AlertsCard";
-import { UserButton, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { kpiTypeToIcon, useKpis } from "@/hooks/useKpis";
+import { useKpiChartData } from "@/hooks/useKpiChartData";
 import { ChartBar, User, ArrowUp, ArrowDown, LayoutDashboard, Settings } from "lucide-react";
-
-// Ensure deltaType uses the correct union type ("increase" | "decrease"), not string
-const demoKpis = [
-  { title: "This Month's Revenue", value: "$18,300", icon: <ChartBar size={20} />, delta: "+7.2%", deltaType: "increase" as const, subtitle: "Stripe" },
-  { title: "Customers", value: "813", icon: <User size={18} />, delta: "-1.1%", deltaType: "decrease" as const, subtitle: "Churn - last 30d" },
-  { title: "Traffic", value: "22,480", icon: <LayoutDashboard size={18} />, delta: "+3.8%", deltaType: "increase" as const, subtitle: "Visitors (GA4)" },
-  { title: "Conv. Rate", value: "4.6%", icon: <ChartBar size={18} />, delta: "+0.9%", deltaType: "increase" as const, subtitle: "Shopify" },
-  { title: "ROI", value: "2.9x", icon: <Settings size={18} />, delta: "-0.2x", deltaType: "decrease" as const, subtitle: "Marketing Efficiency" },
-];
+import { Loader } from "lucide-react";
 
 export default function Index() {
+  const { data: kpiData, isLoading: kpiLoading, error: kpiError } = useKpis();
+  const { data: chartData, isLoading: chartLoading, error: chartError } = useKpiChartData("revenue");
+
+  const iconMap: any = {
+    ChartBar: <ChartBar size={20} />,
+    User: <User size={18} />,
+    LayoutDashboard: <LayoutDashboard size={18} />,
+    Settings: <Settings size={18} />,
+  };
+
   return (
     <div className="bg-background min-h-screen w-full flex flex-col">
       <AppHeader />
@@ -32,14 +35,32 @@ export default function Index() {
 
           {/* Top KPIs */}
           <section className="flex flex-wrap gap-4">
-            {demoKpis.map((kpi) => (
-              <KpiCard key={kpi.title} {...kpi} />
-            ))}
+            {kpiLoading ? (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader className="animate-spin" /> Loading KPIs...
+              </div>
+            ) : kpiError ? (
+              <div className="text-destructive">Failed to load KPIs.</div>
+            ) : kpiData && kpiData.length > 0 ? (
+              kpiData.map((kpi) => (
+                <KpiCard
+                  key={kpi.id}
+                  title={kpi.title}
+                  value={kpi.value}
+                  icon={kpi.icon ? iconMap[kpi.icon] : null}
+                  delta={kpi.delta}
+                  deltaType={kpi.deltaType}
+                  subtitle={kpi.subtitle}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-muted-foreground">No metric data available yet.</div>
+            )}
           </section>
 
           {/* Two columns (Chart & widgets) */}
           <section className="flex flex-wrap gap-8 mt-4">
-            <DemoChart />
+            <DemoChart chartData={chartData} chartLoading={chartLoading} chartError={chartError} />
             <div className="flex flex-col gap-6 max-w-xs">
               <EmbedWidgetCard />
               <AlertsCard />
@@ -55,3 +76,4 @@ export default function Index() {
     </div>
   );
 }
+

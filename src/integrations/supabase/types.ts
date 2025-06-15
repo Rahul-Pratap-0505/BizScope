@@ -9,7 +9,75 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      kpi_chart_points: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          kpi_type: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          id?: string
+          kpi_type: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          kpi_type?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
+      kpi_metrics: {
+        Row: {
+          created_at: string | null
+          delta_display: string | null
+          delta_type: string | null
+          delta_value: number | null
+          display_value: string | null
+          id: string
+          subtitle: string | null
+          type: string
+          updated_at: string | null
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string | null
+          delta_display?: string | null
+          delta_type?: string | null
+          delta_value?: number | null
+          display_value?: string | null
+          id?: string
+          subtitle?: string | null
+          type: string
+          updated_at?: string | null
+          user_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string | null
+          delta_display?: string | null
+          delta_type?: string | null
+          delta_value?: number | null
+          display_value?: string | null
+          id?: string
+          subtitle?: string | null
+          type?: string
+          updated_at?: string | null
+          user_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
