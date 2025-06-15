@@ -1,18 +1,19 @@
 import AppHeader from "@/components/layout/AppHeader";
 import SidebarNav from "@/components/layout/SidebarNav";
 import KpiCard from "@/components/dashboard/KpiCard";
+// Removed import DemoChart
 import KpiLineChart from "@/components/data/KpiLineChart";
 import ConnectProviderCard from "@/components/dashboard/ConnectProviderCard";
 import AlertsCard from "@/components/dashboard/AlertsCard";
 import { kpiTypeToIcon, useKpis } from "@/hooks/useKpis";
 import { useKpiChartData } from "@/hooks/useKpiChartData";
-import { useLatestKpiChartPoints } from "@/hooks/useLatestKpiChartPoints";
 import { ChartBar, User, ArrowUp, ArrowDown, LayoutDashboard, Settings } from "lucide-react";
 import { Loader } from "lucide-react";
 
 export default function Index() {
-  // We'll show the latest values from kpi_chart_points table instead:
-  const { data: chartKpis, isLoading: kpiLoading, error: kpiError } = useLatestKpiChartPoints();
+  const { data: kpiData, isLoading: kpiLoading, error: kpiError } = useKpis();
+  // Removed chartData, chartLoading, chartError for DemoChart
+  // const { data: chartData, isLoading: chartLoading, error: chartError } = useKpiChartData("revenue");
 
   const iconMap: any = {
     ChartBar: <ChartBar size={20} />,
@@ -35,16 +36,16 @@ export default function Index() {
               </div>
             ) : kpiError ? (
               <div className="text-destructive">Failed to load KPIs.</div>
-            ) : chartKpis && chartKpis.length > 0 ? (
-              chartKpis.map((kpi) => (
+            ) : kpiData && kpiData.length > 0 ? (
+              kpiData.map((kpi) => (
                 <KpiCard
-                  key={kpi.kpi_type}
-                  title={kpi.kpi_type}
+                  key={kpi.id}
+                  title={kpi.title}
                   value={kpi.value}
-                  icon={iconMap[kpiTypeToIcon[kpi.kpi_type]] || undefined}
-                  delta={undefined}
-                  deltaType={undefined}
-                  subtitle={`as of ${new Date(kpi.date).toLocaleDateString()}`}
+                  icon={kpi.icon ? iconMap[kpi.icon] : null}
+                  delta={kpi.delta}
+                  deltaType={kpi.deltaType}
+                  subtitle={kpi.subtitle}
                 />
               ))
             ) : (
@@ -56,6 +57,7 @@ export default function Index() {
           <section className="flex flex-wrap gap-8 mt-4">
             <div className="flex flex-col gap-6" style={{ minWidth: 0, flex: 1 }}>
               <KpiLineChart />
+              {/* DemoChart removed */}
             </div>
             <div className="flex flex-col gap-6 max-w-xs">
               <AlertsCard />
