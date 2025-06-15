@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useKpis } from "@/hooks/useKpis";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
@@ -62,7 +62,7 @@ export default function KpiLineChart() {
     const baseColors: Record<string, string> = {};
     let colorIdx = 0;
     return kpiList.map((k) => {
-      let color = k.color;
+      let color = (k as any).color;
       if (!color) {
         // For custom KPIs, assign from palette deterministically by index
         if (!baseColors[k.type]) {
@@ -128,26 +128,25 @@ export default function KpiLineChart() {
     <div className="bg-card rounded-lg shadow p-4 w-full max-w-2xl mx-auto mb-8">
       <div className="font-semibold mb-2">Monthly Trends for All Metrics</div>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
+        <BarChart data={data}>
           <XAxis dataKey="name" stroke="#999" />
           <YAxis stroke="#999" />
           <Tooltip />
           <Legend />
           {kpisWithColor.map(({ type, title, color }) => (
-            <Line
+            <Bar
               key={type}
-              type="monotone"
               dataKey={type}
-              stroke={color}
               name={title}
-              connectNulls
-              strokeWidth={2}
+              fill={color}
               isAnimationActive={false}
+              barSize={28}
+              radius={[6,6,0,0]}
+              // stackId can be used here if you want stacking behavior
             />
           ))}
-        </LineChart>
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );
 }
-
