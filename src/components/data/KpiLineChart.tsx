@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  CartesianGrid,
 } from "recharts";
 import { getDefaultColor, PALETTE } from "./kpiColorPalette";
 
@@ -45,7 +46,7 @@ function parseChartData(rawPoints: RawChartPoint[]): ChartDataPoint[] {
       };
     grouped[month][pt.kpi_type] = pt.value;
   });
-  // Return sorted
+  // Return sorted by date ascending
   return Object.values(grouped).sort((a, b) =>
     (a.name > b.name ? 1 : -1)
   );
@@ -64,7 +65,7 @@ export default function KpiLineChart() {
     return kpiList.map((k) => {
       let color = (k as any).color;
       if (!color) {
-        // For custom KPIs, assign from palette deterministically by index
+        // Assign from palette deterministically by index
         if (!baseColors[k.type]) {
           baseColors[k.type] = PALETTE[colorIdx % PALETTE.length];
           colorIdx++;
@@ -128,10 +129,18 @@ export default function KpiLineChart() {
     <div className="bg-card rounded-lg shadow p-4 w-full max-w-2xl mx-auto mb-8">
       <div className="font-semibold mb-2">Monthly Trends for All Metrics</div>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
+        <BarChart
+          data={data}
+          barCategoryGap="16%"
+          margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" />
           <XAxis dataKey="name" stroke="#999" />
           <YAxis stroke="#999" />
-          <Tooltip />
+          <Tooltip
+            labelStyle={{ color: "#334155" }}
+            contentStyle={{ backgroundColor: "#fff", borderRadius: 8, fontSize: 14 }}
+          />
           <Legend />
           {kpisWithColor.map(({ type, title, color }) => (
             <Bar
@@ -140,9 +149,9 @@ export default function KpiLineChart() {
               name={title}
               fill={color}
               isAnimationActive={false}
-              barSize={28}
-              radius={[6,6,0,0]}
-              // stackId can be used here if you want stacking behavior
+              barSize={32}
+              radius={[6, 6, 0, 0]}
+              // Each Bar renders one KPI as a separate group for each month
             />
           ))}
         </BarChart>
