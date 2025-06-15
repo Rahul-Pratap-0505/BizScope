@@ -1,23 +1,33 @@
 
 import { LayoutDashboard, ChartBar, Settings, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCurrentEmail } from "@/hooks/useCurrentEmail";
 
 const items = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/analytics", label: "Analytics", icon: ChartBar },
-  { href: "/analytics-chat", label: "AI Chat", icon: ChartBar }, // ADDED: AI Chat link
+  { href: "/analytics-chat", label: "AI Chat", icon: ChartBar },
   { href: "#", label: "Account", icon: User },
   { href: "#", label: "Settings", icon: Settings },
   { href: "/data-management", label: "Data Management", icon: ChartBar },
 ];
 
 export default function SidebarNav() {
+  const { email, loading } = useCurrentEmail();
+
   return (
     <aside
       className={cn(
         "hidden md:flex flex-col bg-gradient-to-b from-[#f7fafc] via-white to-[#e7eafe] dark:from-[#151b28] dark:via-[#161c2d] dark:to-[#272f42] w-60 h-[calc(100vh-4rem)] border-r border-sidebar-border pt-8 pl-3 z-10 transition-all duration-200 shadow-xl/10"
       )}
     >
+      <div className="mb-5 pl-2 flex flex-col">
+        {!loading && email && (
+          <span className="text-xs text-blue-800 dark:text-blue-200 font-semibold mb-2 break-all" title={email}>
+            {email}
+          </span>
+        )}
+      </div>
       <nav className="flex flex-col gap-1">
         {items.map((item) => (
           <a
