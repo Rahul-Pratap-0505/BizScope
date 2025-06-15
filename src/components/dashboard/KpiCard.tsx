@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
@@ -22,10 +21,15 @@ export default function KpiCard({ title, value, icon, delta, deltaType, subtitle
         <span className="text-3xl font-bold text-foreground">{value}</span>
         {delta && (
           <span className={cn(
-            "text-sm font-medium",
+            "text-sm font-medium flex items-center gap-1",
             deltaType === "increase" ? "text-green-500" : "text-red-500"
           )}>
-            {deltaType === "increase" ? "▲" : "▼"} {delta}
+            {deltaType === "increase" ? (
+              <span aria-label="increase" title="Increase">▲</span>
+            ) : (
+              <span aria-label="decrease" title="Decrease">▼</span>
+            )}
+            <span>{delta}</span>
           </span>
         )}
       </div>

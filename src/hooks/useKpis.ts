@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -53,8 +52,8 @@ export function useKpis() {
         title: prettyLabel(k.type),
         value: k.display_value ?? k.value,
         icon: kpiTypeToIcon[k.type] ?? undefined,
-        delta: k.delta_display,
-        deltaType: k.delta_type as "increase" | "decrease" | null,
+        delta: k.delta_display, // <- Ensure delta_display is passed through
+        deltaType: k.delta_type as "increase" | "decrease" | null, // <- Ensure correct type
         subtitle: k.subtitle,
         type: k.type,
       }));

@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -249,6 +248,31 @@ export default function KpiMetricForm() {
           <label>
             Value
             <Input name="value" type="number" required value={form.value} onChange={handleChange} />
+          </label>
+          <label>
+            Delta Display (%)
+            <Input
+              name="delta_display"
+              type="text"
+              value={form.delta_display}
+              placeholder="e.g. +8%"
+              onChange={handleChange}
+              maxLength={8}
+              required
+            />
+          </label>
+          <label>
+            Delta Type
+            <select
+              name="delta_type"
+              value={form.delta_type}
+              onChange={handleChange}
+              className="border rounded p-2"
+              required
+            >
+              <option value="increase">Increase</option>
+              <option value="decrease">Decrease</option>
+            </select>
           </label>
           <Button type="submit" disabled={loading}>{loading ? "Saving..." : "Add KPI Metric"}</Button>
           <Button type="button" variant="outline" onClick={() => setCustomizing(false)}>Cancel</Button>
