@@ -1,11 +1,9 @@
-
 import AppHeader from "@/components/layout/AppHeader";
 import SidebarNav from "@/components/layout/SidebarNav";
 import KpiCard from "@/components/dashboard/KpiCard";
 import DemoChart from "@/components/dashboard/DemoChart";
 import KpiLineChart from "@/components/data/KpiLineChart"; // <-- Import line graph component
 import ConnectProviderCard from "@/components/dashboard/ConnectProviderCard";
-import EmbedWidgetCard from "@/components/dashboard/EmbedWidgetCard";
 import AlertsCard from "@/components/dashboard/AlertsCard";
 import { kpiTypeToIcon, useKpis } from "@/hooks/useKpis";
 import { useKpiChartData } from "@/hooks/useKpiChartData";
@@ -68,7 +66,6 @@ export default function Index() {
               <DemoChart chartData={chartData} chartLoading={chartLoading} chartError={chartError} />
             </div>
             <div className="flex flex-col gap-6 max-w-xs">
-              <EmbedWidgetCard />
               <AlertsCard />
             </div>
           </section>
