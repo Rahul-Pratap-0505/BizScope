@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useKpis } from "@/hooks/useKpis";
 import {
   LineChart,
   Line,
@@ -54,6 +55,20 @@ function parseChartData(rawPoints: RawChartPoint[]): ChartDataPoint[] {
 
 export default function KpiLineChart() {
   // Fetch all points (data is an array, not a Promise)
+  const { data: kpiList } = useKpis();
+  const dynamicKpiTypes = kpiList?.map((k) => ({
+    value: k.type,
+    label: k.title,
+    color:
+      k.type === "revenue"
+        ? "#2563eb"
+        : k.type === "customers"
+        ? "#16a34a"
+        : k.type === "conv_rate"
+        ? "#be185d"
+        : "#f59e42", // assign fallback color for custom types
+  })) || [];
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["kpi_chart_points", "all"],
     queryFn: async () => {
@@ -107,7 +122,7 @@ export default function KpiLineChart() {
           <YAxis stroke="#999" />
           <Tooltip />
           <Legend />
-          {KPI_TYPES.map(({ value, label, color }) => (
+          {dynamicKpiTypes.map(({ value, label, color }) => (
             <Line
               key={value}
               type="monotone"
