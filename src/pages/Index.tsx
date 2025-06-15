@@ -3,6 +3,7 @@ import AppHeader from "@/components/layout/AppHeader";
 import SidebarNav from "@/components/layout/SidebarNav";
 import KpiCard from "@/components/dashboard/KpiCard";
 import DemoChart from "@/components/dashboard/DemoChart";
+import KpiLineChart from "@/components/data/KpiLineChart"; // <-- Import line graph component
 import ConnectProviderCard from "@/components/dashboard/ConnectProviderCard";
 import EmbedWidgetCard from "@/components/dashboard/EmbedWidgetCard";
 import AlertsCard from "@/components/dashboard/AlertsCard";
@@ -58,9 +59,14 @@ export default function Index() {
             )}
           </section>
 
-          {/* Two columns (Chart & widgets) */}
+          {/* Two columns (Charts & widgets) */}
           <section className="flex flex-wrap gap-8 mt-4">
-            <DemoChart chartData={chartData} chartLoading={chartLoading} chartError={chartError} />
+            <div className="flex flex-col gap-6" style={{ minWidth: 0, flex: 1 }}>
+              {/* Combined Line Chart for all metrics */}
+              <KpiLineChart />
+              {/* Single Revenue Barchart (existing DemoChart component) */}
+              <DemoChart chartData={chartData} chartLoading={chartLoading} chartError={chartError} />
+            </div>
             <div className="flex flex-col gap-6 max-w-xs">
               <EmbedWidgetCard />
               <AlertsCard />
@@ -76,4 +82,3 @@ export default function Index() {
     </div>
   );
 }
-
