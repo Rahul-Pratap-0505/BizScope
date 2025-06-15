@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCurrentProfile } from "@/hooks/useCurrentProfile";
 import { cleanupAuthState } from "@/utils/authCleanup";
 import SupportDialog from "./SupportDialog";
+import DocsDialog from "./DocsDialog";
 import { useRef } from "react";
 
 const AppHeader = () => {
@@ -49,7 +50,15 @@ const AppHeader = () => {
       </div>
       <nav className="flex items-center gap-6">
         <a href="/" className="text-gray-700 hover:text-blue-600 font-medium transition">Dashboard</a>
-        <a href="#" className="text-gray-700 hover:text-blue-600 transition">Docs</a>
+        <DocsDialog>
+          <button
+            type="button"
+            className="text-gray-700 hover:text-blue-600 transition font-medium"
+            style={{ outline: "none", background: "none" }}
+          >
+            Docs
+          </button>
+        </DocsDialog>
         <SupportDialog>
           <button
             type="button"
