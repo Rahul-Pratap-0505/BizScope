@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import KpiListTable from "./KpiListTable";
 import KpiMetricFormFields from "./KpiMetricFormFields";
 import { getDefaultColor } from "./kpiColorPalette";
+import { format } from "date-fns";
 
 export default function KpiMetricForm() {
   const [customizing, setCustomizing] = useState(false);
@@ -19,6 +20,7 @@ export default function KpiMetricForm() {
     delta_type: "increase",
     subtitle: "",
     color: "",
+    date: "", // <-- add date state for custom KPI
   });
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
@@ -42,26 +44,28 @@ export default function KpiMetricForm() {
   });
 
   // Helper: Upsert the latest chart point for a KPI type
-  async function upsertChartPointForType(type: string, value: number) {
+  async function upsertChartPointForType(type: string, value: number, date?: string) {
     const { data: session } = await supabase.auth.getSession();
     const user_id = session.session?.user?.id;
     if (!user_id) return;
 
-    // Date: current month, first day
-    const today = new Date();
-    // Use day-01 as convention (so months group together)
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const firstOfMonth = `${yyyy}-${mm}-01`;
+    // date: use provided date, else current month, first day
+    let chartDate = date;
+    if (!chartDate) {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      chartDate = `${yyyy}-${mm}-01`;
+    }
 
-    // Check for existing chart point for {user_id, type, date = first day of month}
+    // Check for existing chart point for {user_id, type, date}
     const { data: existing, error: selErr } = await supabase
       .from("kpi_chart_points")
       .select("id")
       .eq("user_id", user_id)
       .eq("kpi_type", type)
-      .eq("date", firstOfMonth)
-      .single();
+      .eq("date", chartDate)
+      .maybeSingle();
 
     if (existing && existing.id) {
       // Update if exists
@@ -77,7 +81,7 @@ export default function KpiMetricForm() {
           {
             user_id,
             kpi_type: type,
-            date: firstOfMonth,
+            date: chartDate,
             value,
           },
         ]);
@@ -149,6 +153,7 @@ export default function KpiMetricForm() {
       delta_type: "increase",
       subtitle: "",
       color: getDefaultColor(kpiWithColor.map((k) => k.color)),
+      date: format(new Date(), "yyyy-MM-dd"), // default today's date
     });
   };
 
@@ -201,8 +206,8 @@ export default function KpiMetricForm() {
       });
     } else {
       toast({ title: "Custom KPI metric added!" });
-      // SYNCHRONIZE new value to kpi_chart_points for current month/type
-      await upsertChartPointForType(insertType, metricValue);
+      // Update to include custom date for chart points
+      await upsertChartPointForType(insertType, metricValue, form.date);
       queryClient.invalidateQueries({ queryKey: ["kpi_metrics"] });
       queryClient.invalidateQueries({ queryKey: ["kpi_metrics_admin"] });
     }

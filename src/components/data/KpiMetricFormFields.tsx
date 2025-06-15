@@ -10,6 +10,7 @@ type FormState = {
   delta_type: string;
   subtitle: string;
   color: string;
+  date?: string;
 };
 type KpiMetricFormFieldsProps = {
   form: FormState;
@@ -57,6 +58,16 @@ export default function KpiMetricFormFields({ form, onChange }: KpiMetricFormFie
           required
           value={form.value}
           onChange={onChange}
+        />
+      </label>
+      <label>
+        Date <span className="text-xs text-muted-foreground">(For chart data; defaults to current month)</span>
+        <Input
+          name="date"
+          type="date"
+          value={form.date || ""}
+          onChange={onChange}
+          required
         />
       </label>
       <label>
