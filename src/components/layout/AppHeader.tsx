@@ -1,5 +1,4 @@
 
-import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard } from "lucide-react";
 
@@ -15,14 +14,8 @@ const AppHeader = () => (
       <a href="#" className="text-gray-700 hover:text-blue-600 transition">Support</a>
     </nav>
     <div>
-      <SignedIn>
-        <UserButton afterSignOutUrl="/" />
-      </SignedIn>
-      <SignedOut>
-        <SignInButton mode="modal">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Sign in</button>
-        </SignInButton>
-      </SignedOut>
+      {/* TODO: Replace this with Supabase Auth buttons */}
+      <span className="text-gray-500 text-sm">Account</span>
     </div>
   </header>
 );
