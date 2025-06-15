@@ -69,22 +69,22 @@ export default function KpiMetricForm() {
   // Unique color for each KPI (based on type)
   const kpiWithColor = useMemo(() => {
     const baseColors: Record<string, string> = {};
-    PROTECTED_KPIS.forEach((core) => (baseColors[core.value] = core.color));
+    // Colors chosen only for display, now all KPIs are editable
     let colorIdx = 0;
     (kpis || []).forEach((k) => {
+      // assign from palette
+      const palette = [
+        "#f59e42",
+        "#f43f5e",
+        "#10b981",
+        "#eab308",
+        "#6366f1",
+        "#4b5563",
+        "#FB7185",
+        "#7c3aed",
+        "#059669",
+      ];
       if (!baseColors[k.type]) {
-        // assign from palette
-        const palette = [
-          "#f59e42",
-          "#f43f5e",
-          "#10b981",
-          "#eab308",
-          "#6366f1",
-          "#4b5563",
-          "#FB7185",
-          "#7c3aed",
-          "#059669",
-        ];
         baseColors[k.type] = palette[colorIdx % palette.length];
         colorIdx++;
       }
@@ -96,7 +96,8 @@ export default function KpiMetricForm() {
   }, [kpis]);
 
   const allKpiTypes = kpiWithColor.map((k) => k.type);
-  const protectedTypes = PROTECTED_KPIS.map((k) => k.value);
+  // No protected types anymore!
+  // const protectedTypes = PROTECTED_KPIS.map((k) => k.value);
 
   // Add new (custom) KPI
   const handleCustomKpi = () => {
@@ -120,10 +121,7 @@ export default function KpiMetricForm() {
   // Add new KPI "type" (custom or core)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (protectedTypes.includes(form.type)) {
-      toast({ title: "This KPI already exists and cannot be added." });
-      return;
-    }
+    // Remove protected type check
     if (allKpiTypes.length >= 10) {
       toast({
         title: "KPI Limit Reached",
@@ -165,12 +163,9 @@ export default function KpiMetricForm() {
     }
   };
 
-  // Delete non-protected KPI
+  // Delete any KPI
   const handleDelete = async (kpiType: string) => {
-    if (protectedTypes.includes(kpiType)) {
-      toast({ title: "Protected KPI", description: "This KPI cannot be deleted.", variant: "destructive" });
-      return;
-    }
+    // Remove protected type check; now all KPIs can be deleted
     const { data } = await supabase.from("kpi_metrics").select("id").eq("type", kpiType);
     const ids = (data || []).map((row) => row.id);
     if (ids.length === 0) {
@@ -212,17 +207,14 @@ export default function KpiMetricForm() {
             <tbody>
               {kpiWithColor.map((kpi) => (
                 <tr key={kpi.type}>
-                  <td className="px-2 py-1">{PROTECTED_KPIS.find(p => p.value === kpi.type)?.label || kpi.display_value || kpi.type}</td>
+                  <td className="px-2 py-1">{kpi.display_value || kpi.type}</td>
                   <td className="px-2 py-1">{kpi.type}</td>
                   <td className="px-2 py-1">
                     <div className="w-4 h-4 rounded-full inline-block" style={{ background: kpi.color }}></div>
                   </td>
                   <td className="px-2 py-1">
-                    {protectedTypes.includes(kpi.type) ? (
-                      <span className="text-xs text-muted-foreground">Protected</span>
-                    ) : (
-                      <Button size="sm" variant="destructive" onClick={() => handleDelete(kpi.type)}>Delete</Button>
-                    )}
+                    {/* Remove "protected" wording; all are deletable */}
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(kpi.type)}>Delete</Button>
                   </td>
                 </tr>
               ))}
