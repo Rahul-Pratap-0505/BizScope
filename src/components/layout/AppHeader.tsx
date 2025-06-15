@@ -1,23 +1,51 @@
-
 import { cn } from "@/lib/utils";
 import { LayoutDashboard } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-const AppHeader = () => (
-  <header className={cn("flex items-center justify-between h-16 px-8 py-3 bg-white border-b border-gray-200 shadow-sm z-20", "dark:bg-sidebar dark:border-sidebar-border dark:text-white")}>
-    <div className="flex items-center gap-4">
-      <LayoutDashboard className="text-blue-600" size={32} />
-      <span className="text-lg font-bold tracking-wide">BizScope</span>
-    </div>
-    <nav className="flex items-center gap-6">
-      <a href="/" className="text-gray-700 hover:text-blue-600 font-medium transition">Dashboard</a>
-      <a href="#" className="text-gray-700 hover:text-blue-600 transition">Docs</a>
-      <a href="#" className="text-gray-700 hover:text-blue-600 transition">Support</a>
-    </nav>
-    <div>
-      {/* TODO: Replace this with Supabase Auth buttons */}
-      <span className="text-gray-500 text-sm">Account</span>
-    </div>
-  </header>
-);
+const AppHeader = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+    return () => { subscription.unsubscribe(); };
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/auth";
+  };
+
+  return (
+    <header className={cn("flex items-center justify-between h-16 px-8 py-3 bg-white border-b border-gray-200 shadow-sm z-20", "dark:bg-sidebar dark:border-sidebar-border dark:text-white")}>
+      <div className="flex items-center gap-4">
+        <LayoutDashboard className="text-blue-600" size={32} />
+        <span className="text-lg font-bold tracking-wide">BizScope</span>
+      </div>
+      <nav className="flex items-center gap-6">
+        <a href="/" className="text-gray-700 hover:text-blue-600 font-medium transition">Dashboard</a>
+        <a href="#" className="text-gray-700 hover:text-blue-600 transition">Docs</a>
+        <a href="#" className="text-gray-700 hover:text-blue-600 transition">Support</a>
+      </nav>
+      <div>
+        {isLoggedIn ? (
+          <button
+            onClick={handleSignOut}
+            className="bg-gray-200 px-3 py-1.5 rounded text-sm hover:bg-gray-300 transition"
+          >
+            Sign out
+          </button>
+        ) : (
+          <a href="/auth" className="text-gray-500 text-sm">Sign in</a>
+        )}
+      </div>
+    </header>
+  );
+};
 
 export default AppHeader;
