@@ -11,9 +11,10 @@ export default function DataManagement() {
         <KpiMetricForm />
       </div>
       <div>
-        <h2 className="font-semibold mb-3">Add Chart Data Point</h2>
+        <h2 className="font-semibold mb-3">Add a line chart to the dashboard showing monthly trends</h2>
         <KpiChartPointForm />
       </div>
     </div>
   );
 }
+
