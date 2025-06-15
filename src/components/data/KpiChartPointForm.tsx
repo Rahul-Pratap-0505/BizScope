@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -76,6 +75,7 @@ export default function KpiChartPointForm() {
   const refreshData = () => {
     if (userId) fetchCustomerPoints(userId);
     queryClient.invalidateQueries({ queryKey: ["kpi_chart_points"] });
+    queryClient.invalidateQueries({ queryKey: ["kpi_chart_points", "all"] });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -265,4 +265,3 @@ export default function KpiChartPointForm() {
     </div>
   );
 }
-
