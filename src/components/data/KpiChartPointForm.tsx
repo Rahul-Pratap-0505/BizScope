@@ -29,8 +29,18 @@ export default function KpiChartPointForm() {
     e.preventDefault();
     setLoading(true);
     toast({ title: "Submitting chart data point..." });
+
+    const { data: userSession } = await supabase.auth.getSession();
+    const user_id = userSession.session?.user?.id;
+    if (!user_id) {
+      toast({ title: "Error", description: "No user ID found.", variant: "destructive" });
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase.from("kpi_chart_points").insert([
       {
+        user_id,
         kpi_type: form.kpi_type,
         date: form.date,
         value: Number(form.value),

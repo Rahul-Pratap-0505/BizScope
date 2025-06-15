@@ -32,8 +32,18 @@ export default function KpiMetricForm() {
     e.preventDefault();
     setLoading(true);
     toast({ title: "Submitting KPI metric..." });
+
+    const { data: userSession } = await supabase.auth.getSession();
+    const user_id = userSession.session?.user?.id;
+    if (!user_id) {
+      toast({ title: "Error", description: "No user ID found.", variant: "destructive" });
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase.from("kpi_metrics").insert([
       {
+        user_id,
         type: form.type,
         value: Number(form.value),
         display_value: form.display_value || null,
