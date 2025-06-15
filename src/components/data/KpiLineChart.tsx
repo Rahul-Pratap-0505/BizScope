@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useKpis } from "@/hooks/useKpis";
@@ -11,19 +12,16 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
-// Map of metric types to colors and labels
-const KPI_TYPES = [
-  { value: "revenue", label: "Revenue", color: "#2563eb" },
-  { value: "customers", label: "Customers", color: "#16a34a" },
-  { value: "traffic", label: "Traffic", color: "#f59e42" },
-  { value: "conv_rate", label: "Conv. Rate", color: "#be185d" },
-  { value: "roi", label: "ROI", color: "#f43f5e" },
-];
+import { getDefaultColor, PALETTE } from "./kpiColorPalette";
 
 // Helper: get label and color by type
-const getKpiMeta = (type: string) =>
-  KPI_TYPES.find((k) => k.value === type) || { label: type, color: "#555" };
+function getKpiMeta(type, kpisWithColor) {
+  const found = kpisWithColor.find((k) => k.type === type);
+  if (found) {
+    return { label: found.title || found.type, color: found.color };
+  }
+  return { label: type, color: getDefaultColor([]) };
+}
 
 type RawChartPoint = {
   date: string;
@@ -54,21 +52,34 @@ function parseChartData(rawPoints: RawChartPoint[]): ChartDataPoint[] {
 }
 
 export default function KpiLineChart() {
-  // Fetch all points (data is an array, not a Promise)
+  // Fetch all metric definitions
   const { data: kpiList } = useKpis();
-  const dynamicKpiTypes = kpiList?.map((k) => ({
-    value: k.type,
-    label: k.title,
-    color:
-      k.type === "revenue"
-        ? "#2563eb"
-        : k.type === "customers"
-        ? "#16a34a"
-        : k.type === "conv_rate"
-        ? "#be185d"
-        : "#f59e42", // assign fallback color for custom types
-  })) || [];
 
+  // Build list of {type, label, color}
+  const kpisWithColor = useMemo(() => {
+    if (!kpiList || kpiList.length === 0) return [];
+    // Use assigned color if available, otherwise fall back to palette
+    const baseColors: Record<string, string> = {};
+    let colorIdx = 0;
+    return kpiList.map((k) => {
+      let color = k.color;
+      if (!color) {
+        // For custom KPIs, assign from palette deterministically by index
+        if (!baseColors[k.type]) {
+          baseColors[k.type] = PALETTE[colorIdx % PALETTE.length];
+          colorIdx++;
+        }
+        color = baseColors[k.type] || getDefaultColor([]);
+      }
+      return {
+        type: k.type,
+        title: k.title,
+        color,
+      };
+    });
+  }, [kpiList]);
+
+  // Chart data
   const { data, isLoading, error } = useQuery({
     queryKey: ["kpi_chart_points", "all"],
     queryFn: async () => {
@@ -122,13 +133,13 @@ export default function KpiLineChart() {
           <YAxis stroke="#999" />
           <Tooltip />
           <Legend />
-          {dynamicKpiTypes.map(({ value, label, color }) => (
+          {kpisWithColor.map(({ type, title, color }) => (
             <Line
-              key={value}
+              key={type}
               type="monotone"
-              dataKey={value}
+              dataKey={type}
               stroke={color}
-              name={label}
+              name={title}
               connectNulls
               strokeWidth={2}
               isAnimationActive={false}
@@ -139,3 +150,4 @@ export default function KpiLineChart() {
     </div>
   );
 }
+
