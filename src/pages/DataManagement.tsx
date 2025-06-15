@@ -1,6 +1,5 @@
 
 import KpiMetricForm from "@/components/data/KpiMetricForm";
-import KpiChartPointForm from "@/components/data/KpiChartPointForm";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -14,15 +13,11 @@ export default function DataManagement() {
           ← Back to Dashboard
         </Button>
       </div>
-      {/* <KpiLineChart /> was here and is now removed */}
       <div className="mb-8">
         <h2 className="font-semibold mb-3">Add New KPI Metric</h2>
         <KpiMetricForm />
       </div>
-      <div>
-        {/* Removed: "Add a line chart to the dashboard showing monthly trends" */}
-        <KpiChartPointForm />
-      </div>
+      {/* The section for "Add a line chart to the dashboard showing monthly trends" and its related content has been fully removed as requested */}
     </div>
   );
 }
