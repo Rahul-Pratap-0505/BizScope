@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 type Message = { from: "user" | "ai"; text: string };
 
@@ -11,6 +13,7 @@ export default function AnalyticsChat() {
   const [messages, setMessages] = useState<Message[]>([{ from: "ai", text: "Hi! Ask me anything about your analytics or KPIs." }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -39,6 +42,16 @@ export default function AnalyticsChat() {
 
   return (
     <div className="max-w-xl mx-auto mt-8 p-4">
+      <div className="mb-4">
+        <Button
+          variant="outline"
+          onClick={() => navigate("/")}
+          className="gap-2"
+        >
+          <ArrowLeft size={18} />
+          Back to Dashboard
+        </Button>
+      </div>
       <Card className="p-4 min-h-[420px] bg-background">
         <div className="flex flex-col gap-3 mb-2 h-[390px] overflow-y-auto max-h-[390px]">
           {messages.map((msg, i) => (
