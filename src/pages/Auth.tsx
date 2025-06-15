@@ -8,6 +8,7 @@ import { Copyright } from "lucide-react";
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState(""); // New username state
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [loading, setLoading] = useState(false);
@@ -33,16 +34,35 @@ export default function AuthPage() {
         setTimeout(() => navigate("/"), 500);
       }
     } else {
+      // Validate username
+      if (!username || username.length < 3) {
+        setError("Username must be at least 3 characters.");
+        setLoading(false);
+        return;
+      }
       // Always set emailRedirectTo for sign up
-      const { error } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: window.location.origin + "/auth",
         },
       });
-      if (error) {
-        setError(error.message);
+      if (signUpError) {
+        setError(signUpError.message);
+      } else if (data.user) {
+        // Save username in profile
+        const id = data.user.id;
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert([{ id, username }]);
+        if (profileError) {
+          setError("Sign up succeeded but saving username failed: " + profileError.message);
+        } else {
+          setSuccess(
+            "Check your inbox to verify your email, then come back to sign in."
+          );
+        }
       } else {
         setSuccess(
           "Check your inbox to verify your email, then come back to sign in."
@@ -86,6 +106,18 @@ export default function AuthPage() {
             autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
           />
+          {mode === "sign-up" && (
+            <Input
+              type="text"
+              placeholder="Username"
+              required
+              value={username}
+              minLength={3}
+              autoComplete="username"
+              onChange={e => setUsername(e.target.value.replace(/\s/g, ""))}
+              className="capitalize"
+            />
+          )}
           <Input
             type="password"
             placeholder="Password"
