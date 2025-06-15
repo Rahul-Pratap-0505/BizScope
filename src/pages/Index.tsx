@@ -1,4 +1,3 @@
-
 import AppHeader from "@/components/layout/AppHeader";
 import SidebarNav from "@/components/layout/SidebarNav";
 import KpiCard from "@/components/dashboard/KpiCard";
@@ -64,11 +63,6 @@ export default function Index() {
               <AlertsCard />
             </div>
           </section>
-
-          {/* Footer/Dev Section */}
-          <footer className="flex mt-12 justify-end px-2 text-xs text-muted-foreground">
-            BizScope • All major platforms, one dashboard. Demo version — no real data is fetched yet.
-          </footer>
         </main>
       </div>
       {/* Connect Stripe moved to page bottom */}
@@ -78,4 +72,3 @@ export default function Index() {
     </div>
   );
 }
-
