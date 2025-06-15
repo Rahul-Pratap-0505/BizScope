@@ -52,37 +52,46 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 via-indigo-100 to-sky-200 dark:from-[#1e2251] dark:via-[#222a4a] dark:to-[#1e2261] px-2 sm:px-4 overflow-hidden">
-      {/* Modern animated blurred abstract shapes in background */}
-      <div className="absolute top-[-8rem] left-[-7rem] w-64 h-64 sm:w-80 sm:h-80 bg-blue-400/30 rounded-full blur-3xl pointer-events-none animate-fade-in" />
-      <div className="absolute bottom-[-7rem] right-[-7rem] w-72 h-72 sm:w-96 sm:h-96 bg-indigo-400/30 rounded-full blur-3xl pointer-events-none animate-fade-in" />
+    <div 
+      className="relative min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 via-indigo-100 to-sky-200 dark:from-[#1e2251] dark:via-[#222a4a] dark:to-[#1e2261] px-0 sm:px-4 overflow-hidden"
+      style={{ minWidth: 0, width: "100vw", maxWidth: "100vw" }}
+    >
+      {/* Modern blurred abstract shapes */}
+      <div className="absolute top-[-6rem] left-[-9rem] w-60 h-60 sm:w-72 sm:h-72 bg-blue-400/30 rounded-full blur-3xl pointer-events-none animate-fade-in" />
+      <div className="absolute bottom-[-6rem] right-[-9rem] w-64 h-64 sm:w-80 sm:h-80 bg-indigo-400/30 rounded-full blur-3xl pointer-events-none animate-fade-in" />
       {/* Glassmorphic Card */}
-      <div className="w-full sm:max-w-sm max-w-[98vw] mx-auto glass-card bg-white/60 dark:bg-[#272a3f]/80 shadow-2xl rounded-2xl lg:rounded-3xl p-5 sm:p-8 flex flex-col gap-7 sm:gap-8 border border-blue-300/40 dark:border-blue-900/30 backdrop-blur-[18px] animate-scale-in duration-200">
+      <div className="w-full mx-auto max-w-[420px] glass-card bg-white/60 dark:bg-[#272a3f]/80 shadow-2xl rounded-xl sm:rounded-2xl p-3 sm:p-7 flex flex-col gap-6 sm:gap-8 border border-blue-300/40 dark:border-blue-900/30 backdrop-blur-[18px] animate-scale-in duration-200"
+           style={{
+             minWidth: 0,
+             marginLeft: "auto",
+             marginRight: "auto",
+             maxWidth: "98vw",
+           }}>
         {/* Logo + Tagline */}
-        <div className="flex flex-col items-center gap-2 mb-1">
-          <span className="inline-block mb-1 shadow-lg rounded-full border-4 border-blue-300/40 dark:border-blue-900/30 bg-white/80 dark:bg-blue-900/30 animate-fade-in">
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <div className="flex flex-col items-center gap-1 sm:gap-2 mb-1">
+          <span className="inline-block mb-0.5 shadow-lg rounded-full border-2 border-blue-300/40 dark:border-blue-900/30 bg-white/80 dark:bg-blue-900/30 animate-fade-in">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
               <rect width="48" height="48" rx="14" fill="#2563eb"/>
               <circle cx="24" cy="24" r="14" fill="#fff"/>
               <circle cx="24" cy="24" r="9" fill="#2563eb" />
               <text x="24" y="29" textAnchor="middle" fontWeight="bold" fontSize="18" fill="#fff" fontFamily="Arial, sans-serif">B</text>
             </svg>
           </span>
-          <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-tr from-blue-800 via-indigo-600 to-sky-400 drop-shadow tracking-tight font-playfair text-center">
+          <span className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-tr from-blue-800 via-indigo-600 to-sky-400 drop-shadow tracking-tight font-playfair text-center">
             BizScope
           </span>
-          <p className="text-center text-sm sm:text-base text-muted-foreground mt-0 font-medium">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground font-medium">
             <span className="animate-pulse">Insight into Business. Instantly.</span>
           </p>
         </div>
         <form
           onSubmit={handleAuth}
-          className="flex flex-col gap-2 sm:gap-3"
+          className="flex flex-col gap-2 sm:gap-3 w-full"
         >
-          <h2 className="text-xl sm:text-2xl font-extrabold text-center mb-1 text-blue-900 dark:text-white/80 tracking-tight transition">
+          <h2 className="text-lg sm:text-xl font-extrabold text-center mb-1 text-blue-900 dark:text-white/80 tracking-tight transition">
             {mode === "sign-in" ? "Welcome back!" : "Let's get you started"}
           </h2>
-          <p className="text-center text-[13px] sm:text-[15px] text-muted-foreground mb-2">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground mb-2">
             {mode === "sign-in"
               ? "Sign in to your account"
               : "Create your free BizScope account"}
@@ -98,7 +107,8 @@ export default function AuthPage() {
             spellCheck={false}
             inputMode="email"
             onChange={(e) => setEmail(e.target.value)}
-            className="shadow-none border border-blue-200/60 focus:border-blue-500 focus:ring-2 focus:ring-blue-200/60 bg-white/70 dark:bg-[#232342]"
+            className="shadow-none border border-blue-200/60 focus:border-blue-500 focus:ring-2 focus:ring-blue-200/60 bg-white/70 dark:bg-[#232342] h-11 text-base sm:text-sm"
+            style={{ minWidth: 0 }}
           />
           <label htmlFor="password" className="sr-only">Password</label>
           <Input
@@ -109,10 +119,13 @@ export default function AuthPage() {
             value={password}
             autoComplete={mode === "sign-up" ? "new-password" : "current-password"}
             onChange={(e) => setPassword(e.target.value)}
-            className="shadow-none border border-blue-200/60 focus:border-blue-500 focus:ring-2 focus:ring-blue-200/60 bg-white/70 dark:bg-[#232342]"
+            className="shadow-none border border-blue-200/60 focus:border-blue-500 focus:ring-2 focus:ring-blue-200/60 bg-white/70 dark:bg-[#232342] h-11 text-base sm:text-sm"
+            style={{ minWidth: 0 }}
           />
           {error && (
-            <div className="text-destructive bg-destructive/10 px-2 py-1 rounded text-sm text-center animate-fade-in mb-1 transition-all border border-destructive/20">{error}</div>
+            <div className="text-destructive bg-destructive/10 px-2 py-1 rounded text-sm text-center animate-fade-in mb-1 transition-all border border-destructive/20">
+              {error}
+            </div>
           )}
           {success && (
             <div className="text-green-700 bg-green-100 px-2 py-1 rounded text-sm text-center animate-fade-in mb-1 border border-green-200 transition-all">
@@ -121,7 +134,8 @@ export default function AuthPage() {
           )}
           <Button
             type="submit"
-            className="mt-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-sky-400 text-white shadow-lg hover:scale-105 hover:shadow-xl transition-transform duration-200 font-semibold py-2 rounded-xl tracking-wide text-base disabled:opacity-80"
+            className="mt-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-sky-400 text-white shadow-lg hover:scale-105 hover:shadow-xl transition-transform duration-200 font-semibold py-2 rounded-xl tracking-wide text-base disabled:opacity-80 h-11"
+            style={{ minWidth: 0 }}
             disabled={loading}
           >
             {mode === "sign-in"
@@ -131,6 +145,7 @@ export default function AuthPage() {
           <button
             type="button"
             className="mx-auto text-sm mt-2 text-blue-700 dark:text-blue-300 underline underline-offset-4 hover:text-blue-500 dark:hover:text-blue-200 font-semibold focus-visible:outline-none transition"
+            style={{ minWidth: 0 }}
             onClick={() => {
               setError(null);
               setSuccess(null);
