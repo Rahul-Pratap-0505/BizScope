@@ -1,4 +1,3 @@
-
 import React, { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -133,7 +132,8 @@ export default function KpiLineChart() {
   return (
     <div className="bg-card rounded-lg shadow p-4 w-full max-w-2xl mx-auto mb-8">
       <div className="font-semibold mb-2">Monthly Trends for All Metrics</div>
-      <ScrollArea orientation="horizontal" className="w-full">
+      {/* Remove: orientation="horizontal" */}
+      <ScrollArea className="w-full">
         <div style={{ width: chartMinWidth }}>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
@@ -158,7 +158,6 @@ export default function KpiLineChart() {
                   isAnimationActive={false}
                   barSize={32}
                   radius={[6, 6, 0, 0]}
-                  // Each Bar renders one KPI as a separate group for each month
                 />
               ))}
             </BarChart>
@@ -168,4 +167,3 @@ export default function KpiLineChart() {
     </div>
   );
 }
-

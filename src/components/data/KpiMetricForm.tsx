@@ -208,8 +208,11 @@ export default function KpiMetricForm() {
       toast({ title: "Custom KPI metric added!" });
       // Update to include custom date for chart points
       await upsertChartPointForType(insertType, metricValue, form.date);
+      // Ensure chart data queries refresh as well as KPI lists
       queryClient.invalidateQueries({ queryKey: ["kpi_metrics"] });
       queryClient.invalidateQueries({ queryKey: ["kpi_metrics_admin"] });
+      queryClient.invalidateQueries({ queryKey: ["kpi_chart_points"] });
+      queryClient.invalidateQueries({ queryKey: ["kpi_chart_points", "all"] });
     }
   };
 
