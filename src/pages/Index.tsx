@@ -23,13 +23,13 @@ export default function Index() {
   };
 
   return (
-    <div className="bg-background min-h-screen w-full flex flex-col">
+    <div className="bg-gradient-to-br from-[#f6f8fc] via-[#ecf0fa] to-[#e7eafe] dark:from-[#111827] dark:to-[#1c2331] min-h-screen w-full flex flex-col transition-all">
       <AppHeader />
       <div className="flex w-full flex-1">
         <SidebarNav />
-        <main className="flex-1 p-8 flex flex-col gap-8 bg-background">
+        <main className="flex-1 p-8 flex flex-col gap-10 bg-transparent">
           {/* Top KPIs */}
-          <section className="flex flex-wrap gap-4">
+          <section className="flex flex-wrap gap-6 justify-center pb-6">
             {kpiLoading ? (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader className="animate-spin" /> Loading KPIs...
@@ -55,7 +55,7 @@ export default function Index() {
 
           {/* Two columns (Charts & widgets) */}
           <section className="flex flex-wrap gap-8 mt-4">
-            <div className="flex flex-col gap-6" style={{ minWidth: 0, flex: 1 }}>
+            <div className="flex flex-col gap-6 min-w-0 flex-1">
               <KpiLineChart />
               {/* DemoChart removed */}
             </div>

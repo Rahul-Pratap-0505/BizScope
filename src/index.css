@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -99,5 +100,42 @@
 
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(122deg, #f7f8fa 0%, #ecf0fa 65%, #e7eafe 100%);
+    min-height: 100vh;
+    /* fallback for dark in js theme (tailwind on top) */
   }
+}
+
+
+/* Modern glassmorphism card style */
+.card,
+.bg-card,
+.glass-card {
+  background: rgba(255,255,255,0.7);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 6px 32px 0 rgba(30,42,73,0.10);
+  border-radius: 1.25rem;
+}
+
+.dark .card,
+.dark .bg-card,
+.dark .glass-card {
+  background: rgba(25,34,55,0.34);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 32px rgba(10,10,40,0.33);
+}
+
+/* Add hover-scale for sidebar items and cards */
+.hover-scale {
+  transition: transform 0.17s cubic-bezier(.32,2,.55,.27);
+}
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+/* Hide scrollbars in cards and section */
+::-webkit-scrollbar {
+  display: none;
 }
