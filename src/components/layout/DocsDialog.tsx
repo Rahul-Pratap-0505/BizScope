@@ -23,19 +23,6 @@ export default function DocsDialog({ children }: { children: React.ReactNode }) 
             <li>Configure alerts and rules for important metric changes.</li>
             <li>Need help? Use the <b>Support</b> button for guidelines or to contact support.</li>
           </ul>
-          <div>
-            <span>
-              Official Documentation:{" "}
-              <a
-                href="https://docs.lovable.dev/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline hover:text-blue-800"
-              >
-                Lovable Documentation
-              </a>
-            </span>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
