@@ -1,8 +1,9 @@
+
 import AppHeader from "@/components/layout/AppHeader";
 import SidebarNav from "@/components/layout/SidebarNav";
 import KpiCard from "@/components/dashboard/KpiCard";
 import DemoChart from "@/components/dashboard/DemoChart";
-import KpiLineChart from "@/components/data/KpiLineChart"; // <-- Import line graph component
+import KpiLineChart from "@/components/data/KpiLineChart";
 import ConnectProviderCard from "@/components/dashboard/ConnectProviderCard";
 import AlertsCard from "@/components/dashboard/AlertsCard";
 import { kpiTypeToIcon, useKpis } from "@/hooks/useKpis";
@@ -27,11 +28,6 @@ export default function Index() {
       <div className="flex w-full flex-1">
         <SidebarNav />
         <main className="flex-1 p-8 flex flex-col gap-8 bg-background">
-          {/* Connect Provider Callout */}
-          <div className="mb-2">
-            <ConnectProviderCard />
-          </div>
-
           {/* Top KPIs */}
           <section className="flex flex-wrap gap-4">
             {kpiLoading ? (
@@ -60,9 +56,7 @@ export default function Index() {
           {/* Two columns (Charts & widgets) */}
           <section className="flex flex-wrap gap-8 mt-4">
             <div className="flex flex-col gap-6" style={{ minWidth: 0, flex: 1 }}>
-              {/* Combined Line Chart for all metrics */}
               <KpiLineChart />
-              {/* Single Revenue Barchart (existing DemoChart component) */}
               <DemoChart chartData={chartData} chartLoading={chartLoading} chartError={chartError} />
             </div>
             <div className="flex flex-col gap-6 max-w-xs">
@@ -75,6 +69,10 @@ export default function Index() {
             BizScope • All major platforms, one dashboard. Demo version — no real data is fetched yet.
           </footer>
         </main>
+      </div>
+      {/* Connect Stripe moved to page bottom */}
+      <div className="flex justify-center mt-2 mb-8">
+        <ConnectProviderCard />
       </div>
     </div>
   );
