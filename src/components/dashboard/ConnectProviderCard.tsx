@@ -8,20 +8,20 @@ export default function ConnectProviderCard() {
   const [connected, setConnected] = useState(false);
 
   return (
-    <div className="bg-card rounded-xl shadow p-4 flex flex-col gap-2 w-full max-w-[320px] min-w-[200px] items-center mx-auto animate-fade-in">
+    <div className="bg-card rounded-lg shadow p-4 flex flex-col gap-3 w-72 items-center">
       <div className="flex items-center gap-2 mb-1">
         <ChartBar className="text-blue-500" size={20} />
-        <span className="font-medium text-base md:text-lg">Connect Stripe</span>
+        <span className="font-medium">Connect Stripe</span>
       </div>
-      <div className="text-xs md:text-sm text-muted-foreground mb-2 text-center">
+      <div className="text-sm text-muted-foreground mb-2 text-center">
         Syncs your Stripe data for instant revenue and customer analytics.
       </div>
       {connected ? (
-        <Button variant="outline" disabled className="w-full">
+        <Button variant="outline" disabled>
           Connected
         </Button>
       ) : (
-        <Button variant="default" onClick={() => setConnected(true)} className="w-full">
+        <Button variant="default" onClick={() => setConnected(true)}>
           Connect
         </Button>
       )}

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -52,37 +51,37 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 via-indigo-100 to-sky-200 dark:from-[#1e2251] dark:via-[#222a4a] dark:to-[#1e2261] px-2 sm:px-4 overflow-hidden">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-300 via-indigo-100 to-sky-200 dark:from-[#1e2251] dark:via-[#222a4a] dark:to-[#1e2261] px-4 relative overflow-hidden">
       {/* Modern animated blurred abstract shapes in background */}
-      <div className="absolute top-[-8rem] left-[-7rem] w-64 h-64 sm:w-80 sm:h-80 bg-blue-400/30 rounded-full blur-3xl pointer-events-none animate-fade-in" />
-      <div className="absolute bottom-[-7rem] right-[-7rem] w-72 h-72 sm:w-96 sm:h-96 bg-indigo-400/30 rounded-full blur-3xl pointer-events-none animate-fade-in" />
+      <div className="absolute top-[-8rem] left-[-5rem] w-80 h-80 bg-blue-400/30 rounded-full blur-3xl pointer-events-none animate-fade-in" />
+      <div className="absolute bottom-[-7rem] right-[-8rem] w-96 h-96 bg-indigo-400/30 rounded-full blur-3xl pointer-events-none animate-fade-in" />
       {/* Glassmorphic Card */}
-      <div className="w-full sm:max-w-sm max-w-[98vw] mx-auto glass-card bg-white/60 dark:bg-[#272a3f]/80 shadow-2xl rounded-2xl lg:rounded-3xl p-5 sm:p-8 flex flex-col gap-7 sm:gap-8 border border-blue-300/40 dark:border-blue-900/30 backdrop-blur-[18px] animate-scale-in duration-200">
+      <div className="w-full max-w-sm glass-card bg-white/60 dark:bg-[#272a3f]/80 shadow-2xl rounded-3xl p-9 flex flex-col gap-8 border border-blue-300/40 dark:border-blue-900/30 backdrop-blur-[18px] animate-scale-in duration-200">
         {/* Logo + Tagline */}
-        <div className="flex flex-col items-center gap-2 mb-1">
+        <div className="flex flex-col items-center gap-2 mb-2">
           <span className="inline-block mb-1 shadow-lg rounded-full border-4 border-blue-300/40 dark:border-blue-900/30 bg-white/80 dark:bg-blue-900/30 animate-fade-in">
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <svg width="58" height="58" viewBox="0 0 48 48" fill="none">
               <rect width="48" height="48" rx="14" fill="#2563eb"/>
               <circle cx="24" cy="24" r="14" fill="#fff"/>
               <circle cx="24" cy="24" r="9" fill="#2563eb" />
               <text x="24" y="29" textAnchor="middle" fontWeight="bold" fontSize="18" fill="#fff" fontFamily="Arial, sans-serif">B</text>
             </svg>
           </span>
-          <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-tr from-blue-800 via-indigo-600 to-sky-400 drop-shadow tracking-tight font-playfair text-center">
+          <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-tr from-blue-800 via-indigo-600 to-sky-400 drop-shadow tracking-tight font-playfair">
             BizScope
           </span>
-          <p className="text-center text-sm sm:text-base text-muted-foreground mt-0 font-medium">
+          <p className="text-center text-base text-muted-foreground mt-0 font-medium">
             <span className="animate-pulse">Insight into Business. Instantly.</span>
           </p>
         </div>
         <form
           onSubmit={handleAuth}
-          className="flex flex-col gap-2 sm:gap-3"
+          className="flex flex-col gap-3"
         >
-          <h2 className="text-xl sm:text-2xl font-extrabold text-center mb-1 text-blue-900 dark:text-white/80 tracking-tight transition">
+          <h2 className="text-2xl font-extrabold text-center mb-1 text-blue-900 dark:text-white/80 tracking-tight transition">
             {mode === "sign-in" ? "Welcome back!" : "Let's get you started"}
           </h2>
-          <p className="text-center text-[13px] sm:text-[15px] text-muted-foreground mb-2">
+          <p className="text-center text-[15px] text-muted-foreground mb-2">
             {mode === "sign-in"
               ? "Sign in to your account"
               : "Create your free BizScope account"}
