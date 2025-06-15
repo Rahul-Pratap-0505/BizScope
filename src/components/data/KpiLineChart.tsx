@@ -14,6 +14,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { getDefaultColor, PALETTE } from "./kpiColorPalette";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Helper: get label and color by type
 function getKpiMeta(type, kpisWithColor) {
@@ -125,37 +126,46 @@ export default function KpiLineChart() {
       </div>
     );
 
+  // If there are many months, let the chart be scrollable horizontally.
+  // The min width ensures each month is at least 80px wide, and max is full.
+  const chartMinWidth = Math.max(400, (data.length || 1) * 80);
+
   return (
     <div className="bg-card rounded-lg shadow p-4 w-full max-w-2xl mx-auto mb-8">
       <div className="font-semibold mb-2">Monthly Trends for All Metrics</div>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart
-          data={data}
-          barCategoryGap="16%"
-          margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" />
-          <XAxis dataKey="name" stroke="#999" />
-          <YAxis stroke="#999" />
-          <Tooltip
-            labelStyle={{ color: "#334155" }}
-            contentStyle={{ backgroundColor: "#fff", borderRadius: 8, fontSize: 14 }}
-          />
-          <Legend />
-          {kpisWithColor.map(({ type, title, color }) => (
-            <Bar
-              key={type}
-              dataKey={type}
-              name={title}
-              fill={color}
-              isAnimationActive={false}
-              barSize={32}
-              radius={[6, 6, 0, 0]}
-              // Each Bar renders one KPI as a separate group for each month
-            />
-          ))}
-        </BarChart>
-      </ResponsiveContainer>
+      <ScrollArea orientation="horizontal" className="w-full">
+        <div style={{ width: chartMinWidth }}>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={data}
+              barCategoryGap="16%"
+              margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" />
+              <XAxis dataKey="name" stroke="#999" />
+              <YAxis stroke="#999" />
+              <Tooltip
+                labelStyle={{ color: "#334155" }}
+                contentStyle={{ backgroundColor: "#fff", borderRadius: 8, fontSize: 14 }}
+              />
+              <Legend />
+              {kpisWithColor.map(({ type, title, color }) => (
+                <Bar
+                  key={type}
+                  dataKey={type}
+                  name={title}
+                  fill={color}
+                  isAnimationActive={false}
+                  barSize={32}
+                  radius={[6, 6, 0, 0]}
+                  // Each Bar renders one KPI as a separate group for each month
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </ScrollArea>
     </div>
   );
 }
+
