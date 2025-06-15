@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentProfile } from "@/hooks/useCurrentProfile";
 import { cleanupAuthState } from "@/utils/authCleanup";
+import SupportDialog from "./SupportDialog";
+import { useRef } from "react";
 
 const AppHeader = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -48,7 +50,15 @@ const AppHeader = () => {
       <nav className="flex items-center gap-6">
         <a href="/" className="text-gray-700 hover:text-blue-600 font-medium transition">Dashboard</a>
         <a href="#" className="text-gray-700 hover:text-blue-600 transition">Docs</a>
-        <a href="#" className="text-gray-700 hover:text-blue-600 transition">Support</a>
+        <SupportDialog>
+          <button
+            type="button"
+            className="text-gray-700 hover:text-blue-600 transition font-medium"
+            style={{ outline: "none", background: "none" }}
+          >
+            Support
+          </button>
+        </SupportDialog>
       </nav>
       <div className="flex items-center gap-4">
         {isLoggedIn && !usernameLoading && username && (
