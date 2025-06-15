@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +10,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Worm } from "lucide-react";
 
 // Map of metric types to colors and labels
 const KPI_TYPES = [
@@ -25,16 +23,6 @@ const KPI_TYPES = [
 // Helper: get label and color by type
 const getKpiMeta = (type: string) =>
   KPI_TYPES.find((k) => k.value === type) || { label: type, color: "#555" };
-
-// Helper: Dot with worm icon
-function WormDot({ cx, cy, fill }: { cx?: number; cy?: number; fill?: string }) {
-  if (typeof cx !== "number" || typeof cy !== "number") return null;
-  return (
-    <g transform={`translate(${cx - 8},${cy - 8})`}>
-      <Worm size={16} color={fill || "#888"} />
-    </g>
-  );
-}
 
 type RawChartPoint = {
   date: string;
@@ -128,9 +116,6 @@ export default function KpiLineChart() {
               name={label}
               connectNulls
               strokeWidth={2}
-              dot={(props) => (
-                <WormDot {...props} fill={color} />
-              )}
               isAnimationActive={false}
             />
           ))}
