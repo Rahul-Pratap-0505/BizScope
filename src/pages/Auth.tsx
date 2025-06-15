@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -91,7 +90,7 @@ export default function AuthPage() {
           <Input
             id="email"
             type="email"
-            placeholder="jane@bizscope.com"
+            placeholder="rahul@bizscope.com"
             required
             value={email}
             autoComplete="email"
