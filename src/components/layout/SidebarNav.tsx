@@ -7,6 +7,7 @@ const items = [
   { href: "#", label: "Analytics", icon: ChartBar },
   { href: "#", label: "Account", icon: User },
   { href: "#", label: "Settings", icon: Settings },
+  { href: "/data-management", label: "Data Management", icon: ChartBar }, // <-- Added new
 ];
 
 export default function SidebarNav() {
