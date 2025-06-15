@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 const items = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/analytics", label: "Analytics", icon: ChartBar },
+  { href: "/analytics-chat", label: "AI Chat", icon: ChartBar }, // ADDED: AI Chat link
   { href: "#", label: "Account", icon: User },
   { href: "#", label: "Settings", icon: Settings },
   { href: "/data-management", label: "Data Management", icon: ChartBar },
