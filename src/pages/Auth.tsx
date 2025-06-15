@@ -145,11 +145,7 @@ export default function AuthPage() {
         {/* Copyright/credits */}
         <div className="text-xs text-gray-400 text-center mt-4 opacity-80 select-none pt-4 border-t border-muted flex items-center justify-center gap-1">
           <Copyright className="w-3.5 h-3.5 inline-block mb-0.5" />
-          <span
-            className="font-bold bg-gradient-to-r from-blue-600 to-sky-400 text-transparent bg-clip-text drop-shadow"
-          >
-            Created by Rahul Pratap
-          </span>
+          <span>Created by Rahul Pratap</span>
         </div>
       </div>
     </div>
