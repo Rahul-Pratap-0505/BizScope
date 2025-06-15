@@ -8,6 +8,7 @@ import KpiListTable from "./KpiListTable";
 import KpiMetricFormFields from "./KpiMetricFormFields";
 import { getDefaultColor } from "./kpiColorPalette";
 import { format } from "date-fns";
+import { Edit } from "lucide-react";
 
 export default function KpiMetricForm() {
   const [customizing, setCustomizing] = useState(false);
@@ -23,6 +24,7 @@ export default function KpiMetricForm() {
     date: "", // <-- add date state for custom KPI
   });
   const [loading, setLoading] = useState(false);
+  const [editingType, setEditingType] = useState<string | null>(null); // Track which KPI is being edited
   const queryClient = useQueryClient();
 
   // Fetch all KPIs for display, limiting to 10 KPIs
@@ -157,13 +159,35 @@ export default function KpiMetricForm() {
     });
   };
 
+  // Find row by type for editing
+  const findKpiByType = (type: string) => (kpis || []).find((k) => k.type === type);
+
+  // Edit handler: populate form with KPI data
+  const handleEdit = (kpiType: string) => {
+    const kpi = findKpiByType(kpiType);
+    if (!kpi) return;
+    setCustomizing(true);
+    setEditingType(kpiType);
+    setForm({
+      type: kpi.type || "",
+      label: kpi.display_value || "",
+      value: kpi.value !== undefined ? String(kpi.value) : "",
+      display_value: kpi.display_value || "",
+      delta_display: kpi.delta_display || "",
+      delta_type: kpi.delta_type || "increase",
+      subtitle: kpi.subtitle || "",
+      color: getDefaultColor(kpiWithColor.map((k) => k.color)),
+      date: "", // Editing does not allow changing chart date (keep empty for now)
+    });
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (allKpiTypes.length >= 10) {
+    if (!editingType && allKpiTypes.length >= 10) {
       toast({
         title: "KPI Limit Reached",
         description: "You can only track up to 10 active KPIs at the same time.",
@@ -172,7 +196,7 @@ export default function KpiMetricForm() {
       return;
     }
     setLoading(true);
-    toast({ title: "Adding new KPI metric..." });
+
     const { data: session } = await supabase.auth.getSession();
     const user_id = session.session?.user?.id;
     if (!user_id) {
@@ -180,39 +204,90 @@ export default function KpiMetricForm() {
       setLoading(false);
       return;
     }
-    // Insert a first row for definition
-    const insertType =
-      form.type.trim() ||
-      form.label.trim().toLowerCase().replace(/[^a-z0-9_]/gi, "_");
-    const metricValue = Number(form.value || 0);
-    const { error } = await supabase.from("kpi_metrics").insert([
-      {
-        user_id,
-        type: insertType,
-        value: metricValue,
+
+    if (editingType) {
+      // Update mode
+      toast({ title: "Updating KPI metric..." });
+      // Get all matching rows to update (by type)
+      const { data } = await supabase
+        .from("kpi_metrics")
+        .select("id")
+        .eq("type", editingType);
+      const ids = (data || []).map((row) => row.id);
+      if (ids.length === 0) {
+        toast({ title: "KPI not found." });
+        setLoading(false);
+        return;
+      }
+      const updateData: any = {
+        value: Number(form.value || 0),
         display_value: form.display_value || null,
         delta_display: form.delta_display || null,
         delta_type: form.delta_type || null,
         subtitle: form.subtitle || null,
-      },
-    ]);
-    setLoading(false);
-    setCustomizing(false);
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      };
+      // Color and date are client only
+
+      const { error } = await supabase
+        .from("kpi_metrics")
+        .update(updateData)
+        .in("id", ids);
+
+      setLoading(false);
+      setCustomizing(false);
+      setEditingType(null);
+      if (error) {
+        toast({
+          title: "Error updating KPI",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({ title: "KPI updated successfully!" });
+        // Optionally update chart point value for current month
+        await upsertChartPointForType(editingType, Number(form.value || 0));
+        // Refresh queries
+        queryClient.invalidateQueries({ queryKey: ["kpi_metrics"] });
+        queryClient.invalidateQueries({ queryKey: ["kpi_metrics_admin"] });
+        queryClient.invalidateQueries({ queryKey: ["kpi_chart_points"] });
+        queryClient.invalidateQueries({ queryKey: ["kpi_chart_points", "all"] });
+      }
     } else {
-      toast({ title: "Custom KPI metric added!" });
-      // Update to include custom date for chart points
-      await upsertChartPointForType(insertType, metricValue, form.date);
-      // Ensure chart data queries refresh as well as KPI lists
-      queryClient.invalidateQueries({ queryKey: ["kpi_metrics"] });
-      queryClient.invalidateQueries({ queryKey: ["kpi_metrics_admin"] });
-      queryClient.invalidateQueries({ queryKey: ["kpi_chart_points"] });
-      queryClient.invalidateQueries({ queryKey: ["kpi_chart_points", "all"] });
+      // Add new
+      // Insert a first row for definition
+      const insertType =
+        form.type.trim() ||
+        form.label.trim().toLowerCase().replace(/[^a-z0-9_]/gi, "_");
+      const metricValue = Number(form.value || 0);
+      const { error } = await supabase.from("kpi_metrics").insert([
+        {
+          user_id,
+          type: insertType,
+          value: metricValue,
+          display_value: form.display_value || null,
+          delta_display: form.delta_display || null,
+          delta_type: form.delta_type || null,
+          subtitle: form.subtitle || null,
+        },
+      ]);
+      setLoading(false);
+      setCustomizing(false);
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({ title: "Custom KPI metric added!" });
+        // Update to include custom date for chart points
+        await upsertChartPointForType(insertType, metricValue, form.date);
+        // Ensure chart data queries refresh as well as KPI lists
+        queryClient.invalidateQueries({ queryKey: ["kpi_metrics"] });
+        queryClient.invalidateQueries({ queryKey: ["kpi_metrics_admin"] });
+        queryClient.invalidateQueries({ queryKey: ["kpi_chart_points"] });
+        queryClient.invalidateQueries({ queryKey: ["kpi_chart_points", "all"] });
+      }
     }
   };
 
@@ -254,13 +329,21 @@ export default function KpiMetricForm() {
           <div className="font-semibold">Your KPIs (max 10)</div>
           <Button
             size="sm"
-            onClick={handleCustomKpi}
+            onClick={() => {
+              setEditingType(null);
+              handleCustomKpi();
+            }}
             disabled={allKpiTypes.length >= 10 || customizing}
           >
             + Add Custom KPI
           </Button>
         </div>
-        <KpiListTable kpis={kpiWithColor} isLoading={isLoading} onDelete={handleDelete} />
+        <KpiListTable
+          kpis={kpiWithColor}
+          isLoading={isLoading}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
       </div>
 
       {customizing && (
@@ -269,12 +352,21 @@ export default function KpiMetricForm() {
           className="flex flex-col gap-3 bg-card p-4 rounded-lg shadow mb-6"
         >
           <KpiMetricFormFields form={form} onChange={handleChange} />
-          <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "Add KPI Metric"}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => setCustomizing(false)}>
-            Cancel
-          </Button>
+          <div className="flex gap-2">
+            <Button type="submit" disabled={loading}>
+              {loading ? (editingType ? "Saving..." : "Saving...") : editingType ? "Update KPI" : "Add KPI Metric"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setCustomizing(false);
+                setEditingType(null);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
         </form>
       )}
     </div>
