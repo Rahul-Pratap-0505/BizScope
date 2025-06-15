@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Copyright } from "lucide-react";
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
@@ -119,8 +120,9 @@ export default function AuthPage() {
           </button>
         </form>
         {/* Copyright/Credits */}
-        <div className="text-xs text-gray-400 text-center mt-2 opacity-80 select-none pt-2 border-t border-muted">
-          Created by Rahul Pratap
+        <div className="text-xs text-gray-400 text-center mt-2 opacity-80 select-none pt-2 border-t border-muted flex items-center justify-center gap-1">
+          <Copyright className="w-3.5 h-3.5 inline-block mb-0.5" />
+          <span>Created by Rahul Pratap</span>
         </div>
       </div>
     </div>
