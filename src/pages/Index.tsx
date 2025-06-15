@@ -1,7 +1,7 @@
+
 import AppHeader from "@/components/layout/AppHeader";
 import SidebarNav from "@/components/layout/SidebarNav";
 import KpiCard from "@/components/dashboard/KpiCard";
-// Removed import DemoChart
 import KpiLineChart from "@/components/data/KpiLineChart";
 import ConnectProviderCard from "@/components/dashboard/ConnectProviderCard";
 import AlertsCard from "@/components/dashboard/AlertsCard";
@@ -9,22 +9,37 @@ import { kpiTypeToIcon, useKpis } from "@/hooks/useKpis";
 import { useKpiChartData } from "@/hooks/useKpiChartData";
 import { ChartBar, User, ArrowUp, ArrowDown, LayoutDashboard, Settings } from "lucide-react";
 import { Loader } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useState } from "react";
 
 export default function Index() {
   const { data: kpiData, isLoading: kpiLoading, error: kpiError } = useKpis();
-  // Removed chartData, chartLoading, chartError for DemoChart
-  // const { data: chartData, isLoading: chartLoading, error: chartError } = useKpiChartData("revenue");
-
   const iconMap: any = {
     ChartBar: <ChartBar size={20} />,
     User: <User size={18} />,
     LayoutDashboard: <LayoutDashboard size={18} />,
     Settings: <Settings size={18} />,
   };
+  const isMobile = useIsMobile();
+  const [mobileNoticeDismissed, setMobileNoticeDismissed] = useState(false);
 
   return (
     <div className="bg-gradient-to-br from-[#f6f8fc] via-[#ecf0fa] to-[#e7eafe] dark:from-[#111827] dark:to-[#1c2331] min-h-screen w-full flex flex-col transition-all">
       <AppHeader />
+      {isMobile && !mobileNoticeDismissed && (
+        <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 text-sm flex justify-between items-center z-50">
+          <span>
+            For the best experience, please switch to <b>Desktop mode</b> in your browser or use a desktop device.
+          </span>
+          <button
+            className="ml-4 text-yellow-700 hover:text-yellow-900 rounded px-2 py-1"
+            onClick={() => setMobileNoticeDismissed(true)}
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div className="flex w-full flex-1">
         <SidebarNav />
         <main className="flex-1 p-8 flex flex-col gap-10 bg-transparent">
@@ -52,12 +67,10 @@ export default function Index() {
               <div className="text-sm text-muted-foreground">No metric data available yet.</div>
             )}
           </section>
-
           {/* Two columns (Charts & widgets) */}
           <section className="flex flex-wrap gap-8 mt-4">
             <div className="flex flex-col gap-6 min-w-0 flex-1">
               <KpiLineChart />
-              {/* DemoChart removed */}
             </div>
             <div className="flex flex-col gap-6 max-w-xs">
               <AlertsCard />
