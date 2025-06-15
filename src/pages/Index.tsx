@@ -2,7 +2,7 @@
 import AppHeader from "@/components/layout/AppHeader";
 import SidebarNav from "@/components/layout/SidebarNav";
 import KpiCard from "@/components/dashboard/KpiCard";
-import DemoChart from "@/components/dashboard/DemoChart";
+// Removed import DemoChart
 import KpiLineChart from "@/components/data/KpiLineChart";
 import ConnectProviderCard from "@/components/dashboard/ConnectProviderCard";
 import AlertsCard from "@/components/dashboard/AlertsCard";
@@ -13,7 +13,8 @@ import { Loader } from "lucide-react";
 
 export default function Index() {
   const { data: kpiData, isLoading: kpiLoading, error: kpiError } = useKpis();
-  const { data: chartData, isLoading: chartLoading, error: chartError } = useKpiChartData("revenue");
+  // Removed chartData, chartLoading, chartError for DemoChart
+  // const { data: chartData, isLoading: chartLoading, error: chartError } = useKpiChartData("revenue");
 
   const iconMap: any = {
     ChartBar: <ChartBar size={20} />,
@@ -57,7 +58,7 @@ export default function Index() {
           <section className="flex flex-wrap gap-8 mt-4">
             <div className="flex flex-col gap-6" style={{ minWidth: 0, flex: 1 }}>
               <KpiLineChart />
-              <DemoChart chartData={chartData} chartLoading={chartLoading} chartError={chartError} />
+              {/* DemoChart removed */}
             </div>
             <div className="flex flex-col gap-6 max-w-xs">
               <AlertsCard />
@@ -77,3 +78,4 @@ export default function Index() {
     </div>
   );
 }
+
