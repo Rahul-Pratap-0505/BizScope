@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "#", label: "Analytics", icon: ChartBar },
+  { href: "/analytics", label: "Analytics", icon: ChartBar },
   { href: "#", label: "Account", icon: User },
   { href: "#", label: "Settings", icon: Settings },
-  { href: "/data-management", label: "Data Management", icon: ChartBar }, // <-- Added new
+  { href: "/data-management", label: "Data Management", icon: ChartBar },
 ];
 
 export default function SidebarNav() {

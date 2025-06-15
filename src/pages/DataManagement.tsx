@@ -1,7 +1,6 @@
 
 import KpiMetricForm from "@/components/data/KpiMetricForm";
 import KpiChartPointForm from "@/components/data/KpiChartPointForm";
-import KpiLineChart from "@/components/data/KpiLineChart";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +14,7 @@ export default function DataManagement() {
           ← Back to Dashboard
         </Button>
       </div>
-      <KpiLineChart />
+      {/* <KpiLineChart /> was here and is now removed */}
       <div className="mb-8">
         <h2 className="font-semibold mb-3">Add New KPI Metric</h2>
         <KpiMetricForm />

@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthPage from "@/pages/Auth";
 import DataManagement from "@/pages/DataManagement";
+import Analytics from "@/pages/Analytics";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,7 @@ function ProtectedApp() {
         <Sonner />
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* Custom route for Data Management */}
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/data-management" element={<DataManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
