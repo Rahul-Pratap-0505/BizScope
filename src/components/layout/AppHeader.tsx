@@ -3,6 +3,7 @@ import { LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentProfile } from "@/hooks/useCurrentProfile";
+import { cleanupAuthState } from "@/utils/authCleanup";
 
 const AppHeader = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -19,8 +20,23 @@ const AppHeader = () => {
   }, []);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/auth";
+    try {
+      // Clean up state first
+      cleanupAuthState();
+
+      // Attempt global sign out; ignore errors
+      try {
+        await supabase.auth.signOut({ scope: "global" });
+      } catch (_err) {
+        // ignore errors from signOut
+      }
+
+      // Full reload to ensure clean state
+      window.location.href = "/auth";
+    } catch (_error) {
+      // fallback redirect as a catch-all
+      window.location.href = "/auth";
+    }
   };
 
   return (
