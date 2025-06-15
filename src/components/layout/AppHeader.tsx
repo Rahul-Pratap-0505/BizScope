@@ -1,3 +1,4 @@
+
 import { cn } from "@/lib/utils";
 import { LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -43,13 +44,17 @@ const AppHeader = () => {
   };
 
   return (
-    <header className={cn("flex items-center justify-between h-16 px-8 py-3 bg-white border-b border-gray-200 shadow-sm z-20", "dark:bg-sidebar dark:border-sidebar-border dark:text-white")}>
-      <div className="flex items-center gap-4">
-        <LayoutDashboard className="text-blue-600" size={32} />
-        <span className="text-lg font-bold tracking-wide">BizScope</span>
+    <header className={cn(
+      "flex items-center justify-between h-16 px-4 md:px-8 py-3 bg-white border-b border-gray-200 shadow-sm z-20",
+      "dark:bg-sidebar dark:border-sidebar-border dark:text-white",
+      "sticky top-0 left-0 w-full"
+    )}>
+      <div className="flex items-center gap-3 md:gap-4">
+        <LayoutDashboard className="text-blue-600" size={28} />
+        <span className="text-base md:text-lg font-bold tracking-wide">BizScope</span>
       </div>
-      <nav className="flex items-center gap-6">
-        <a href="/" className="text-gray-700 hover:text-blue-600 font-medium transition">Dashboard</a>
+      <nav className="flex items-center gap-3 md:gap-6">
+        <a href="/" className="hidden sm:inline text-gray-700 hover:text-blue-600 font-medium transition">Dashboard</a>
         <DocsDialog>
           <button
             type="button"
@@ -69,19 +74,19 @@ const AppHeader = () => {
           </button>
         </SupportDialog>
       </nav>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         {isLoggedIn && !usernameLoading && username && (
-          <span className="text-sm text-gray-600">Welcome, <span className="font-semibold">{username}</span>!</span>
+          <span className="text-xs md:text-sm text-gray-600">Welcome, <span className="font-semibold">{username}</span>!</span>
         )}
         {isLoggedIn ? (
           <button
             onClick={handleSignOut}
-            className="bg-gray-200 px-3 py-1.5 rounded text-sm hover:bg-gray-300 transition"
+            className="bg-gray-200 px-2 md:px-3 py-1.5 rounded text-xs md:text-sm hover:bg-gray-300 transition"
           >
             Sign out
           </button>
         ) : (
-          <a href="/auth" className="text-gray-500 text-sm">Sign in</a>
+          <a href="/auth" className="text-gray-500 text-xs md:text-sm">Sign in</a>
         )}
       </div>
     </header>
