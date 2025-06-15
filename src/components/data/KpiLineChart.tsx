@@ -11,6 +11,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { Worm } from "lucide-react";
+
 // Map of metric types to colors and labels
 const KPI_TYPES = [
   { value: "revenue", label: "Revenue", color: "#2563eb" },
@@ -21,24 +23,49 @@ const KPI_TYPES = [
 ];
 
 // Helper: get label and color by type
-const getKpiMeta = (type) => KPI_TYPES.find((k) => k.value === type) || { label: type, color: "#555" };
+const getKpiMeta = (type: string) =>
+  KPI_TYPES.find((k) => k.value === type) || { label: type, color: "#555" };
 
-function parseChartData(rawPoints) {
-  // Group by date, flatten all metrics into one array
-  const grouped = {};
+// Helper: Dot with worm icon
+function WormDot({ cx, cy, fill }: { cx?: number; cy?: number; fill?: string }) {
+  if (typeof cx !== "number" || typeof cy !== "number") return null;
+  return (
+    <g transform={`translate(${cx - 8},${cy - 8})`}>
+      <Worm size={16} color={fill || "#888"} />
+    </g>
+  );
+}
+
+type RawChartPoint = {
+  date: string;
+  kpi_type: string;
+  value: number;
+};
+
+type ChartDataPoint = {
+  name: string; // e.g., "Jun '24"
+  [kpi_type: string]: string | number;
+};
+
+function parseChartData(rawPoints: RawChartPoint[]): ChartDataPoint[] {
+  // Group by month, flatten all metrics into one object per month
+  const grouped: Record<string, ChartDataPoint> = {};
   rawPoints.forEach((pt) => {
-    const month = new Date(pt.date).toISOString().slice(0, 7); // e.g. "2024-06"
-    if (!grouped[month]) grouped[month] = { name: new Date(pt.date).toLocaleString("en-US", { month: "short", year: "2-digit" }) };
+    const month = new Date(pt.date).toISOString().slice(0, 7); // "YYYY-MM"
+    if (!grouped[month])
+      grouped[month] = {
+        name: new Date(pt.date).toLocaleString("en-US", { month: "short", year: "2-digit" }),
+      };
     grouped[month][pt.kpi_type] = pt.value;
   });
-  // Return data sorted by month
-  return Object.values(grouped).sort((a, b) => (a.name > b.name ? 1 : -1));
+  // Return sorted
+  return Object.values(grouped).sort((a, b) =>
+    (a.name > b.name ? 1 : -1)
+  );
 }
 
 export default function KpiLineChart() {
-  // Fetch all points for current user
-  const { data: userSession } = supabase.auth.getSession().then((d) => d.data);
-
+  // Fetch all points (data is an array, not a Promise)
   const { data, isLoading, error } = useQuery({
     queryKey: ["kpi_chart_points", "all"],
     queryFn: async () => {
@@ -47,7 +74,7 @@ export default function KpiLineChart() {
         .select("date,kpi_type,value")
         .order("date", { ascending: true });
       if (error) throw error;
-      return parseChartData(points || []);
+      return parseChartData((points || []) as RawChartPoint[]);
     },
   });
 
@@ -73,9 +100,15 @@ export default function KpiLineChart() {
       </div>
     );
   if (error)
-    return <div className="text-destructive">Failed to load chart data.</div>;
+    return (
+      <div className="text-destructive">Failed to load chart data.</div>
+    );
   if (!data || data.length === 0)
-    return <div className="text-sm text-muted-foreground">No chart data for any metric.</div>;
+    return (
+      <div className="text-sm text-muted-foreground">
+        No chart data for any metric.
+      </div>
+    );
 
   return (
     <div className="bg-card rounded-lg shadow p-4 w-full max-w-2xl mx-auto mb-8">
@@ -95,7 +128,9 @@ export default function KpiLineChart() {
               name={label}
               connectNulls
               strokeWidth={2}
-              dot={{ r: 2.5 }}
+              dot={(props) => (
+                <WormDot {...props} fill={color} />
+              )}
               isAnimationActive={false}
             />
           ))}

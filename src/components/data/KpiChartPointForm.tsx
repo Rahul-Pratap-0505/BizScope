@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const KPI_TYPES = [
   { value: "revenue", label: "Revenue" },
@@ -20,6 +20,7 @@ export default function KpiChartPointForm() {
     value: "",
   });
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -56,6 +57,8 @@ export default function KpiChartPointForm() {
         date: "",
         value: "",
       });
+      // Invalidate to refetch dashboard chart
+      queryClient.invalidateQueries({ queryKey: ["kpi_chart_points"] });
     }
   };
 
