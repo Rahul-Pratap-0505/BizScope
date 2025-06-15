@@ -2,9 +2,11 @@ import { cn } from "@/lib/utils";
 import { LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useCurrentProfile } from "@/hooks/useCurrentProfile";
 
 const AppHeader = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { username, loading: usernameLoading } = useCurrentProfile();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -32,7 +34,10 @@ const AppHeader = () => {
         <a href="#" className="text-gray-700 hover:text-blue-600 transition">Docs</a>
         <a href="#" className="text-gray-700 hover:text-blue-600 transition">Support</a>
       </nav>
-      <div>
+      <div className="flex items-center gap-4">
+        {isLoggedIn && !usernameLoading && username && (
+          <span className="text-sm text-gray-600">Welcome, <span className="font-semibold">{username}</span>!</span>
+        )}
         {isLoggedIn ? (
           <button
             onClick={handleSignOut}
