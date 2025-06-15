@@ -9,12 +9,13 @@ import AlertsCard from "@/components/dashboard/AlertsCard";
 import { UserButton, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { ChartBar, User, ArrowUp, ArrowDown, LayoutDashboard, Settings } from "lucide-react";
 
+// Ensure deltaType uses the correct union type ("increase" | "decrease"), not string
 const demoKpis = [
-  { title: "This Month's Revenue", value: "$18,300", icon: <ChartBar size={20} />, delta: "+7.2%", deltaType: "increase", subtitle: "Stripe" },
-  { title: "Customers", value: "813", icon: <User size={18} />, delta: "-1.1%", deltaType: "decrease", subtitle: "Churn - last 30d" },
-  { title: "Traffic", value: "22,480", icon: <LayoutDashboard size={18} />, delta: "+3.8%", deltaType: "increase", subtitle: "Visitors (GA4)" },
-  { title: "Conv. Rate", value: "4.6%", icon: <ChartBar size={18} />, delta: "+0.9%", deltaType: "increase", subtitle: "Shopify" },
-  { title: "ROI", value: "2.9x", icon: <Settings size={18} />, delta: "-0.2x", deltaType: "decrease", subtitle: "Marketing Efficiency" },
+  { title: "This Month's Revenue", value: "$18,300", icon: <ChartBar size={20} />, delta: "+7.2%", deltaType: "increase" as const, subtitle: "Stripe" },
+  { title: "Customers", value: "813", icon: <User size={18} />, delta: "-1.1%", deltaType: "decrease" as const, subtitle: "Churn - last 30d" },
+  { title: "Traffic", value: "22,480", icon: <LayoutDashboard size={18} />, delta: "+3.8%", deltaType: "increase" as const, subtitle: "Visitors (GA4)" },
+  { title: "Conv. Rate", value: "4.6%", icon: <ChartBar size={18} />, delta: "+0.9%", deltaType: "increase" as const, subtitle: "Shopify" },
+  { title: "ROI", value: "2.9x", icon: <Settings size={18} />, delta: "-0.2x", deltaType: "decrease" as const, subtitle: "Marketing Efficiency" },
 ];
 
 export default function Index() {
