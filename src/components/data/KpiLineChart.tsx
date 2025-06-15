@@ -1,3 +1,4 @@
+
 import React, { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,7 +62,7 @@ export default function KpiLineChart() {
     const baseColors: Record<string, string> = {};
     let colorIdx = 0;
     return kpiList.map((k) => {
-      let color = (k as any).color;
+      let color = k.color;
       if (!color) {
         // For custom KPIs, assign from palette deterministically by index
         if (!baseColors[k.type]) {
@@ -149,3 +150,4 @@ export default function KpiLineChart() {
     </div>
   );
 }
+
