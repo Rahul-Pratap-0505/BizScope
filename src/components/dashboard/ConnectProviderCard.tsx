@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { ChartBar } from "lucide-react";
 import { useState } from "react";
-
+ 
 // Placeholder for provider connect logic
 export default function ConnectProviderCard() {
   const [connected, setConnected] = useState(false);
